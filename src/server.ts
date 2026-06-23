@@ -1,4 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { registerEnhancePrompt } from './tools/enhance-prompt.js'
 
 const SERVER_INSTRUCTIONS = `prompt-kickstart-mcp — two free tools that reproduce the meigen.ai Generate workflow.
 
@@ -12,8 +13,7 @@ export function createServer() {
     { name: 'prompt-kickstart-mcp', version: '1.0.0' },
     { instructions: SERVER_INSTRUCTIONS },
   )
-  // Tools are registered in later tasks:
-  //   registerEnhancePrompt(server)
-  //   registerImageToPrompt(server)
+  registerEnhancePrompt(server)
+  // registerImageToPrompt(server)  // added in Task 5
   return server
 }
