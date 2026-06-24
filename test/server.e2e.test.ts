@@ -219,6 +219,17 @@ test('templatize_prompt rejects a call with no prompt (schema guardrail)', async
   assert.match(res.content[0].text, /Input validation error/)
 })
 
+test('paid tools are gated: createServer with a token also exposes generate_media + list_models', async () => {
+  const tokenServer = createServer({ meigenToken: 'meigen_sk_test' })
+  const [ct, st] = InMemoryTransport.createLinkedPair()
+  const c = new Client({ name: 'gated-test', version: '1.0.0' })
+  await Promise.all([tokenServer.connect(st), c.connect(ct)])
+  const { tools } = await c.listTools()
+  const names = tools.map((t) => t.name).sort()
+  assert.deepEqual(names, ['enhance_prompt', 'generate_media', 'image_to_prompt', 'list_models', 'prompt_variations', 'storyboard_prompt', 'templatize_prompt', 'translate_prompt'])
+  await c.close()
+})
+
 test('calling an unknown tool returns a "not found" error result', async () => {
   const res: any = await client.callTool({ name: 'no_such_tool', arguments: {} })
   assert.equal(res.isError, true)

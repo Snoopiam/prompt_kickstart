@@ -12,7 +12,7 @@
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test test/prompts.test.ts test/enhance-prompt.test.ts test/image.test.ts test/image-to-prompt.test.ts test/storyboard-prompt.test.ts test/translate-prompt.test.ts test/prompt-variations.test.ts test/templatize-prompt.test.ts test/server.e2e.test.ts",
+    "test": "node --import tsx --test test/prompts.test.ts test/enhance-prompt.test.ts test/image.test.ts test/image-to-prompt.test.ts test/storyboard-prompt.test.ts test/translate-prompt.test.ts test/prompt-variations.test.ts test/templatize-prompt.test.ts test/meigen-api.test.ts test/generate-media.test.ts test/server.e2e.test.ts",
     "prepublishOnly": "npm run build && npm test"
   },
   "engines": { "node": ">=18.0.0" },

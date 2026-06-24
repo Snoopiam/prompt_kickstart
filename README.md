@@ -154,6 +154,51 @@ Once registered, ask the host LLM naturally — it will call the tools:
 - *"Give me 4 variations of: a cat in a garden."* → `prompt_variations`
 - *"Turn this into a reusable template: a red sports car at sunset."* → `templatize_prompt`
 
+## Optional: paid generation (Tier 3)
+
+The free tools above never touch the network. If you *also* want to generate real images/videos,
+set a **meigen.ai API token** (`meigen_sk_…`, from your meigen account → API Keys) via the
+`MEIGEN_API_TOKEN` environment variable. When that variable is present — and only then — two extra
+tools are registered:
+
+### `generate_media` *(paid — spends purchased meigen credits)*
+
+Generate a real image or video through the meigen.ai API and return the result URL(s). It submits the
+request and polls until completion. Craft the prompt first with the free tools.
+
+| Input | Type | Notes |
+|-------|------|-------|
+| `prompt` | `string` *(required)* | What to generate. |
+| `modelId` | `string` *(optional)* | e.g. `gpt-image-2`, `midjourney-v8.1`, `seedream-5.0-lite`, `veo-3.1`, `seedance-2-0`. Default `gpt-image-2`. |
+| `aspectRatio` | `string` *(optional, default `auto`)* | e.g. `1:1`, `16:9`, `9:16`. |
+| `resolution` | `string` *(optional)* | Images `1K/2K/3K/4K`; videos `480p/720p/1080p`. |
+| `quality` | `low\|medium\|high` *(optional)* | GPT Image 2.0 only. |
+| `referenceImages` | `string[]` *(optional)* | Public HTTPS image URLs. |
+| `referenceType` | `content\|style` *(optional)* | Midjourney V8.1 only. |
+| `duration` | `number` *(optional)* | Video length in seconds. |
+| `tier` | `fast\|pro` *(optional)* | Seedance 2.0 / Veo 3.1. |
+| `referenceVideo`, `referenceVideoDuration` | *(optional)* | Seedance 2.0 video continuation. |
+
+### `list_models` *(read-only)*
+
+List the models available on the meigen.ai API (ids, ratios, reference limits). Does not spend generation credits.
+
+To enable, add the env var to your MCP client config:
+
+```json
+{
+  "mcpServers": {
+    "prompt-kickstart": {
+      "command": "node",
+      "args": ["C:/SnoopLABS/GitHUB Cloned Apps/prompt-kickstart-mcp/bin/prompt-kickstart-mcp.js"],
+      "env": { "MEIGEN_API_TOKEN": "meigen_sk_YOUR_KEY" }
+    }
+  }
+}
+```
+
+> Without `MEIGEN_API_TOKEN`, these two tools simply don't appear — the server stays 100% free.
+
 ## How it works
 
 The server returns **instructions plus content** (for `image_to_prompt`, the image itself

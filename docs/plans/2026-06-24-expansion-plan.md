@@ -63,19 +63,19 @@ Lower-effort polish, mostly new options rather than new tools.
   picker and `@` mention conventions into enhancement guidance so prompts can
   carry precise hex colors and multi-reference instructions.
 
-## Tier 3 — PAID, opt-in (requires meigen API token + purchased credits)
+## Tier 3 — PAID, opt-in (requires meigen API token + purchased credits)  ✅ SCAFFOLDED (2026-06-24)
 
 Out of scope for the "free" goal, but the natural future expansion if you ever
 want real output. meigen's API uses **purchased credits only** (daily/free
 credits never apply to the API path), so this must be clearly separated from the
 free tools and gated behind a user-supplied token.
 
-- **`generate_image`** — call meigen's generation API (GPT Image 2, Nano Banana,
+- **`generate_media`** ✅ — call meigen's generation API (unified image+video endpoint) (GPT Image 2, Nano Banana,
   Seedream, Midjourney V8.1, …). Needs `MEIGEN_API_TOKEN`, model + aspect-ratio
   params, credit-cost awareness.
-- **`generate_video`** — Seedance 2.0 / Veo 3.1 / Happyhorse, incl. image-to-video
-  ("Animate") and video extension.
-- **`cutout`** — background removal to transparent PNG.
+- **`generate_media`** also covers video (Seedance 2.0 / Veo 3.1 / Happyhorse), incl. first/last frame and Seedance reference-video continuation.
+- **`list_models`** ✅ — list available API models.
+- **`cutout`** — background removal to transparent PNG (not yet built; meigen exposes this only as a UI action, not a documented API endpoint).
 
 Design rule if Tier 3 is ever built: keep it in a separate, optional module so the
 server still runs and the Tier 0–2 tools stay 100% free when no token is set.
