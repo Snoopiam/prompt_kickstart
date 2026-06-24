@@ -49,7 +49,7 @@ test('listTools exposes exactly the two expected tools', async () => {
 test('enhance_prompt is callable end-to-end and returns wrapped guidance', async () => {
   const res: any = await client.callTool({
     name: 'enhance_prompt',
-    arguments: { prompt: 'a fox in snow', style: 'realistic' },
+    arguments: { prompt: 'a fox in snow', mode: 'polish' },
   })
   assert.ok(!res.isError)
   assert.equal(res.content[0].type, 'text')
@@ -57,12 +57,21 @@ test('enhance_prompt is callable end-to-end and returns wrapped guidance', async
   assert.ok(res.content[0].text.includes('Senior Visual Logic Analyst'))
 })
 
-test('enhance_prompt applies its default style when none is supplied', async () => {
+test('enhance_prompt applies its default (polish) mode when none is supplied', async () => {
   const res: any = await client.callTool({
     name: 'enhance_prompt',
     arguments: { prompt: 'a fox' },
   })
   assert.ok(res.content[0].text.includes('Senior Visual Logic Analyst'))
+})
+
+test('enhance_prompt mode=expand selects the Midjourney expansion prompt', async () => {
+  const res: any = await client.callTool({
+    name: 'enhance_prompt',
+    arguments: { prompt: 'a fox', mode: 'expand' },
+  })
+  assert.ok(!res.isError)
+  assert.ok(res.content[0].text.includes('Midjourney Prompt Director'))
 })
 
 test('enhance_prompt rejects a call with no prompt (schema guardrail)', async () => {
@@ -73,10 +82,10 @@ test('enhance_prompt rejects a call with no prompt (schema guardrail)', async ()
   assert.match(res.content[0].text, /Input validation error/)
 })
 
-test('enhance_prompt rejects an out-of-enum style (schema guardrail)', async () => {
+test('enhance_prompt rejects an out-of-enum mode (schema guardrail)', async () => {
   const res: any = await client.callTool({
     name: 'enhance_prompt',
-    arguments: { prompt: 'x', style: 'cyberpunk' },
+    arguments: { prompt: 'x', mode: 'cyberpunk' },
   })
   assert.equal(res.isError, true)
   assert.match(res.content[0].text, /Input validation error/)
@@ -85,7 +94,7 @@ test('enhance_prompt rejects an out-of-enum style (schema guardrail)', async () 
 test('image_to_prompt with a local path returns an image + instruction over the wire', async () => {
   const res: any = await client.callTool({
     name: 'image_to_prompt',
-    arguments: { imagePath: png, style: 'realistic' },
+    arguments: { imagePath: png },
   })
   assert.ok(!res.isError)
   assert.deepEqual(res.content.map((c: any) => c.type), ['image', 'text'])

@@ -1,9 +1,9 @@
 import { buildEnhanceResult } from '../src/tools/enhance-prompt.js'
 
-const r = buildEnhanceResult({ prompt: 'a cat in a garden', style: 'anime' })
+const r = buildEnhanceResult({ prompt: 'a cat in a garden', mode: 'expand' })
 const text = r.content[0].text
 const hasUserPrompt = text.includes('a cat in a garden')
-const hasSystemPrompt = text.includes('Anime Prompt Director') // from ANIME_SYSTEM_PROMPT
+const hasSystemPrompt = text.includes('Midjourney Prompt Director') // from EXPAND_SYSTEM_PROMPT
 const oneBlock = r.content.length === 1 && r.content[0].type === 'text'
 
 console.log('hasUserPrompt:', hasUserPrompt)

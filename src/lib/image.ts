@@ -43,21 +43,18 @@ async function maybeResize(input: Buffer, fallbackMime: string): Promise<ImageCo
   return { data: input.toString('base64'), mimeType }
 }
 
+/**
+ * Load a locally uploaded image and return base64 content, auto-downscaled to
+ * keep the host's vision payload within token limits. Uploads only — no remote
+ * fetching, matching the live "Describe Image" feature (drag-drop / pasted).
+ * Returns null when no path is supplied (the host should use a pasted image).
+ */
 export async function loadImageContent(
-  opts: { imagePath?: string; imageUrl?: string },
+  opts: { imagePath?: string },
 ): Promise<ImageContent | null> {
   if (opts.imagePath) {
     const buf = await readFile(opts.imagePath)
     return maybeResize(buf, mimeFromExt(opts.imagePath))
-  }
-  if (opts.imageUrl) {
-    const res = await fetch(opts.imageUrl)
-    if (!res.ok) {
-      throw new Error(`Failed to fetch image: ${res.status} ${res.statusText}`)
-    }
-    const contentType = (res.headers.get('content-type') ?? 'image/png').split(';')[0].trim()
-    const buf = Buffer.from(await res.arrayBuffer())
-    return maybeResize(buf, contentType)
   }
   return null
 }

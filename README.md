@@ -6,13 +6,17 @@ vision and writing.
 
 ## Tools
 
-- **`image_to_prompt`** — turn an image into a generation-ready "kickstart" prompt.
-  Inputs: `imagePath` (local file), `imageUrl` (public URL), or neither (analyzes
-  the image already shared in the conversation). Optional `style`:
-  `realistic` (default) | `anime` | `illustration`. Oversized images are
-  auto-downscaled (longest edge ≤ 1568px) for optimal analysis.
-- **`enhance_prompt`** — expand a brief text prompt into a detailed, style-aware
-  prompt. Inputs: `prompt`, optional `style`.
+- **`image_to_prompt`** — turn an uploaded image into a generation-ready prompt
+  ("Describe Image"). Input: `imagePath` (local file), or none to analyze the
+  image already pasted in the conversation. The visual style is **inferred** from
+  the image; the prompt covers subject & composition, art style & technique,
+  lighting/color/mood, and camera angle. Oversized images are auto-downscaled
+  (longest edge ≤ 1568px).
+- **`enhance_prompt`** — expand a brief text prompt into a detailed one.
+  Inputs: `prompt`, optional `mode` — `polish` (default; preserves intent, adds
+  composition/lighting/materials) or `expand` (Midjourney V8.1; rewrites to
+  Midjourney-optimized language, auto-translates non-English) — and an optional
+  `model` hint. Works best on prompts under ~30 words.
 
 Typical flow: `image_to_prompt` → `enhance_prompt` → paste into any image generator.
 

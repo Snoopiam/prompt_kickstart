@@ -19,14 +19,23 @@ after(async () => {
   await rm(dir, { recursive: true, force: true })
 })
 
-test('with a local image: returns an image block followed by an instruction block', async () => {
-  const r = await buildImageToPromptResult({ imagePath: png, style: 'realistic' })
+test('with an uploaded image: returns an image block followed by a describe instruction', async () => {
+  const r = await buildImageToPromptResult({ imagePath: png })
   assert.deepEqual(r.content.map((c) => c.type), ['image', 'text'])
   assert.ok(!r.isError)
   const img = r.content[0]
   assert.ok(img.type === 'image' && img.data.length > 0 && img.mimeType === 'image/png')
   const instr = r.content[1]
   assert.ok(instr.type === 'text' && instr.text.includes('reverse-engineer'))
+})
+
+test('the describe instruction infers style and covers the four dimensions', async () => {
+  const r = await buildImageToPromptResult({ imagePath: png })
+  const text = r.content[1].type === 'text' ? r.content[1].text : ''
+  assert.ok(text.includes('Subject & scene composition'))
+  assert.ok(text.includes('Art style & technique'))
+  assert.ok(text.includes('Lighting, color palette & mood'))
+  assert.ok(text.includes('Camera angle & perspective'))
 })
 
 test('with no source: a single text block tells the host to use the pasted image', async () => {
@@ -42,10 +51,4 @@ test('with a bad path: returns isError and a human-readable message instead of t
   assert.equal(r.isError, true)
   assert.equal(r.content[0].type, 'text')
   assert.ok(r.content[0].type === 'text' && r.content[0].text.includes('Could not load the image'))
-})
-
-test('style flows through to the embedded guidelines', async () => {
-  const r = await buildImageToPromptResult({ imagePath: png, style: 'anime' })
-  const instr = r.content[1]
-  assert.ok(instr.type === 'text' && instr.text.includes('Anime Prompt Director'))
 })

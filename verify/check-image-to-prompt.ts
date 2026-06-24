@@ -7,7 +7,7 @@ const small = 'verify/tmp/small.png'
 await sharp({ create: { width: 200, height: 200, channels: 3, background: { r: 0, g: 255, b: 0 } } }).png().toFile(small)
 
 // Case A: with a local image -> image block + text block
-const withImg = await buildImageToPromptResult({ imagePath: small, style: 'realistic' })
+const withImg = await buildImageToPromptResult({ imagePath: small })
 const types = withImg.content.map(c => c.type).join(',')
 const hasReverseEng = withImg.content.some(c => c.type === 'text' && c.text.includes('reverse-engineer'))
 console.log('withImage types:', types, '| hasReverseEng:', hasReverseEng)   // expect image,text
