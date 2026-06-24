@@ -61,5 +61,17 @@ const sb: any = await client.callTool({
 })
 console.log(preview(sb).join('\n'), '\n')
 
+console.log('— translate_prompt (es → en) —')
+const tr: any = await client.callTool({ name: 'translate_prompt', arguments: { prompt: 'un gato en un jardín al atardecer' } })
+console.log(preview(tr).join('\n'), '\n')
+
+console.log('— prompt_variations (count=3) —')
+const vr: any = await client.callTool({ name: 'prompt_variations', arguments: { prompt: 'a cat in a garden', count: 3 } })
+console.log(preview(vr).join('\n'), '\n')
+
+console.log('— templatize_prompt —')
+const tm: any = await client.callTool({ name: 'templatize_prompt', arguments: { prompt: 'a red sports car on a coastal road at sunset' } })
+console.log(preview(tm).join('\n'), '\n')
+
 await client.close()
 console.log('CLOSED — server shut down cleanly')

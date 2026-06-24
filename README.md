@@ -68,6 +68,32 @@ duration (no gaps), and keeps the idea's original language.
 | `idea` | `string` *(required)* | A short, one-line video idea, e.g. `"a barista making latte art in a cozy café"`. |
 | `durationSeconds` | `number` *(optional, default `8`)* | Target length in seconds (1–60); the timeline spans `0s` to this value. |
 
+### `translate_prompt`
+
+Translate a prompt into a target language — mirroring meigen.ai's *Translate* button. Preserves all visual intent and prompt tokens (`[tags]`, `@mentions`, `#hex`, flags).
+
+| Input | Type | Notes |
+|-------|------|-------|
+| `prompt` | `string` *(required)* | The prompt to translate (any language). |
+| `targetLang` | `string` *(optional, default `"en"`)* | Target language; English is what most models prefer. |
+
+### `prompt_variations`
+
+Generate several distinct, generation-ready variations of a base prompt — keeping the core subject while varying mood, lighting, composition, palette, or style (meigen's *Use Idea* pattern).
+
+| Input | Type | Notes |
+|-------|------|-------|
+| `prompt` | `string` *(required)* | The base prompt to vary. |
+| `count` | `number` *(optional, default `3`)* | How many variations (1–10). |
+
+### `templatize_prompt`
+
+Rewrite a prompt into a reusable template with editable `[placeholder]` tags (meigen's *Variable Tags*, e.g. `[subject]`, `[style]`, `[color palette]`), so you can spin variations by swapping tag values.
+
+| Input | Type | Notes |
+|-------|------|-------|
+| `prompt` | `string` *(required)* | The prompt to convert into a tagged template. |
+
 ## Requirements
 
 - **Node.js 18+** to run the built server (development & testing use the Node test runner, which needs **Node 20.6+**).
@@ -119,6 +145,9 @@ Once registered, ask the host LLM naturally — it will call the tools:
 - *"Enhance this: a cat in a garden."* → `enhance_prompt` (polish)
 - *"Make this a Midjourney prompt: lonely lighthouse at dawn."* → `enhance_prompt` with `mode: "expand"`
 - *"Storyboard an 8-second clip: a barista making latte art."* → `storyboard_prompt`
+- *"Translate this prompt to English: un gato en un jardín."* → `translate_prompt`
+- *"Give me 4 variations of: a cat in a garden."* → `prompt_variations`
+- *"Turn this into a reusable template: a red sports car at sunset."* → `templatize_prompt`
 
 ## How it works
 
@@ -164,6 +193,9 @@ src/
     image-to-prompt.ts  # image_to_prompt tool
     enhance-prompt.ts   # enhance_prompt tool
     storyboard-prompt.ts # storyboard_prompt tool
+    translate-prompt.ts  # translate_prompt tool
+    prompt-variations.ts # prompt_variations tool
+    templatize-prompt.ts # templatize_prompt tool
 test/                   # node:test suite (unit + e2e)
 verify/                 # standalone smoke-check scripts
 ```

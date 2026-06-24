@@ -36,10 +36,10 @@ after(async () => {
   await rm(dir, { recursive: true, force: true })
 })
 
-test('listTools exposes exactly the three expected tools', async () => {
+test('listTools exposes exactly the six expected tools', async () => {
   const { tools } = await client.listTools()
   const names = tools.map((t) => t.name).sort()
-  assert.deepEqual(names, ['enhance_prompt', 'image_to_prompt', 'storyboard_prompt'])
+  assert.deepEqual(names, ['enhance_prompt', 'image_to_prompt', 'prompt_variations', 'storyboard_prompt', 'templatize_prompt', 'translate_prompt'])
   for (const t of tools) {
     assert.ok(t.description && t.description.length > 0, `${t.name} missing description`)
     assert.ok(t.inputSchema, `${t.name} missing inputSchema`)
@@ -141,6 +141,59 @@ test('storyboard_prompt defaults its duration when none is supplied', async () =
 
 test('storyboard_prompt rejects a call with no idea (schema guardrail)', async () => {
   const res: any = await client.callTool({ name: 'storyboard_prompt', arguments: {} })
+  assert.equal(res.isError, true)
+  assert.match(res.content[0].text, /Input validation error/)
+})
+
+test('translate_prompt is callable end-to-end and defaults to English', async () => {
+  const res: any = await client.callTool({
+    name: 'translate_prompt',
+    arguments: { prompt: 'un gato en un jardin' },
+  })
+  assert.ok(!res.isError)
+  assert.ok(res.content[0].text.includes('un gato en un jardin'))
+  assert.ok(res.content[0].text.includes('Image-Prompt Translator'))
+  assert.ok(/into "en"/.test(res.content[0].text))
+})
+
+test('translate_prompt rejects a call with no prompt (schema guardrail)', async () => {
+  const res: any = await client.callTool({ name: 'translate_prompt', arguments: {} })
+  assert.equal(res.isError, true)
+  assert.match(res.content[0].text, /Input validation error/)
+})
+
+test('prompt_variations is callable end-to-end with a custom count', async () => {
+  const res: any = await client.callTool({
+    name: 'prompt_variations',
+    arguments: { prompt: 'a cat in a garden', count: 4 },
+  })
+  assert.ok(!res.isError)
+  assert.ok(res.content[0].text.includes('a cat in a garden'))
+  assert.ok(res.content[0].text.includes('Prompt Variation Generator'))
+  assert.ok(/create 4 distinct variations/.test(res.content[0].text))
+})
+
+test('prompt_variations rejects an out-of-range count (schema guardrail)', async () => {
+  const res: any = await client.callTool({
+    name: 'prompt_variations',
+    arguments: { prompt: 'x', count: 99 },
+  })
+  assert.equal(res.isError, true)
+  assert.match(res.content[0].text, /Input validation error/)
+})
+
+test('templatize_prompt is callable end-to-end and wraps the templatizer guidance', async () => {
+  const res: any = await client.callTool({
+    name: 'templatize_prompt',
+    arguments: { prompt: 'a red sports car on a coastal road at sunset' },
+  })
+  assert.ok(!res.isError)
+  assert.ok(res.content[0].text.includes('a red sports car on a coastal road at sunset'))
+  assert.ok(res.content[0].text.includes('Prompt Templatizer'))
+})
+
+test('templatize_prompt rejects a call with no prompt (schema guardrail)', async () => {
+  const res: any = await client.callTool({ name: 'templatize_prompt', arguments: {} })
   assert.equal(res.isError, true)
   assert.match(res.content[0].text, /Input validation error/)
 })
