@@ -22,30 +22,30 @@ Source: https://docs.meigen.ai/en/features/generate
 | `image_to_prompt` | Describe Image | ✅ done |
 | `enhance_prompt` (polish / expand) | Prompt Enhancement | ✅ done |
 
-## Tier 1 — free, host-LLM, high value / low effort
+## Tier 1 — free, host-LLM, high value / low effort  ✅ COMPLETE (2026-06-24)
 
 These are pure "instructions in → text out" tools, exactly like the two already
 built. Each is a new file in `src/tools/` + a system prompt in `src/lib/prompts.ts`
 + tests. No new dependencies.
 
-1. **`storyboard_prompt`** — meigen's *Storyboard* (video prompt builder).
+1. **`storyboard_prompt`** ✅ — meigen's *Storyboard* (video prompt builder).
    Turns a one-line idea into a timed, shot-by-shot storyboard: an overview
    paragraph + a `0s–Ns` beat list with no gaps, matching a chosen duration.
    Keeps the input language. *Inputs:* `idea: string`, `durationSeconds?: number`
    (default 8). Highest-value addition — extends the project from images into video
    prompting while staying free.
 
-2. **`translate_prompt`** — meigen's *Translate* button.
+2. **`translate_prompt`** ✅ — meigen's *Translate* button.
    Translate a non-English prompt to English (best model input) while preserving
    visual intent. *Inputs:* `prompt: string`, `targetLang?: string` (default "en").
    Trivial effort; also useful as an internal step inside the other tools.
 
-3. **`prompt_variations`** — meigen's *Use Idea* / "create variations" pattern.
+3. **`prompt_variations`** ✅ — meigen's *Use Idea* / "create variations" pattern.
    Given one prompt, return N distinct variations (different mood, lighting, or
    composition) without losing the core subject. *Inputs:* `prompt: string`,
    `count?: number` (default 3).
 
-4. **`templatize_prompt`** — meigen's *Variable Tags* (`[style]`, `[subject]`…).
+4. **`templatize_prompt`** ✅ — meigen's *Variable Tags* (`[style]`, `[subject]`…).
    Rewrite a prompt with editable `[placeholder]` slots so the user can spin
    variations by swapping tags. *Inputs:* `prompt: string`.
 
