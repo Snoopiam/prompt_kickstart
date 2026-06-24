@@ -54,5 +54,12 @@ console.log('— image_to_prompt (bad path → isError) —')
 const b: any = await client.callTool({ name: 'image_to_prompt', arguments: { imagePath: 'nope.png' } })
 console.log('isError:', b.isError, '|', preview(b).join('\n'), '\n')
 
+console.log('— storyboard_prompt (idea + 8s) —')
+const sb: any = await client.callTool({
+  name: 'storyboard_prompt',
+  arguments: { idea: 'a barista making latte art in a cozy café', durationSeconds: 8 },
+})
+console.log(preview(sb).join('\n'), '\n')
+
 await client.close()
 console.log('CLOSED — server shut down cleanly')

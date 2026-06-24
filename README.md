@@ -53,7 +53,20 @@ Expand a brief text prompt into a detailed one. **Model-aware**, mirroring meige
 Works best on brief prompts (under ~30 words); if a prompt is already richly detailed, it
 may be returned largely unchanged.
 
-**Typical flow:** `image_to_prompt` → `enhance_prompt` → paste into any image generator.
+**Typical image flow:** `image_to_prompt` → `enhance_prompt` → paste into any image generator.
+**Typical video flow:** `storyboard_prompt` → paste into any video generator.
+
+### `storyboard_prompt`
+
+Turn a **one-line video idea** into a complete, ready-to-shoot storyboard — the video
+equivalent of `enhance_prompt`, mirroring meigen.ai's *Storyboard*. It returns an
+overview paragraph plus a timed, **shot-by-shot timeline** from `0s` to your chosen
+duration (no gaps), and keeps the idea's original language.
+
+| Input | Type | Notes |
+|-------|------|-------|
+| `idea` | `string` *(required)* | A short, one-line video idea, e.g. `"a barista making latte art in a cozy café"`. |
+| `durationSeconds` | `number` *(optional, default `8`)* | Target length in seconds (1–60); the timeline spans `0s` to this value. |
 
 ## Requirements
 
@@ -105,6 +118,7 @@ Once registered, ask the host LLM naturally — it will call the tools:
 - *"Describe `C:/photos/sunset.jpg` as a prompt."* → `image_to_prompt` with `imagePath`
 - *"Enhance this: a cat in a garden."* → `enhance_prompt` (polish)
 - *"Make this a Midjourney prompt: lonely lighthouse at dawn."* → `enhance_prompt` with `mode: "expand"`
+- *"Storyboard an 8-second clip: a barista making latte art."* → `storyboard_prompt`
 
 ## How it works
 
@@ -148,7 +162,8 @@ src/
     image.ts            # local image load + auto-downscale
   tools/
     image-to-prompt.ts  # image_to_prompt tool
-    enhance-prompt.ts    # enhance_prompt tool
+    enhance-prompt.ts   # enhance_prompt tool
+    storyboard-prompt.ts # storyboard_prompt tool
 test/                   # node:test suite (unit + e2e)
 verify/                 # standalone smoke-check scripts
 ```
