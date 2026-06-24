@@ -193,3 +193,112 @@ Identify the elements a user would most likely want to swap to make variations, 
 1. First line: the templated prompt (with \`[tags]\` inline).
 2. Then a blank line, then \`Variables:\` followed by a short bullet list naming each tag and the original value it replaced.
 3. Output ONLY that — no extra commentary.`
+
+/**
+ * Model-aware enhancement presets (Tier 2).
+ * meigen.ai's enhancement adapts to the selected model. Given a target-model
+ * hint, return tuned prompting guidance + the model's prompt-length cap, so the
+ * host LLM writes in the style that model responds to best. Grounded in
+ * https://docs.meigen.ai/en/features/models (model IDs, strengths, limits).
+ */
+export interface ModelPreset {
+  /** Canonical meigen model id. */
+  id: string
+  /** Human label. */
+  label: string
+  /** Prompting guidance for the host LLM, tuned to this model. */
+  guidance: string
+  /** Recommended prompt-length cap in characters, if the model has one. */
+  maxChars?: number
+}
+
+const MODEL_PRESETS: Array<{ match: RegExp; preset: ModelPreset }> = [
+  {
+    match: /midjourney|^mjv?8|^mj$/,
+    preset: {
+      id: 'midjourney-v8.1',
+      label: 'Midjourney V8.1',
+      guidance:
+        'Midjourney V8.1 favors concise, evocative, comma-separated descriptors plus style and quality tags rather than full prose sentences. Do NOT include aspect-ratio or parameter flags (--ar, --stylize, --chaos, etc.) — those are set in Advanced Options. It auto-translates non-English input. Prefer enhance mode "expand" for this model.',
+      maxChars: 8192,
+    },
+  },
+  {
+    match: /nanobananapro|gemini3pro|geminipro/,
+    preset: {
+      id: 'gemini-3-pro-image-preview',
+      label: 'Nano Banana Pro (Gemini)',
+      guidance:
+        'Nano Banana Pro (Gemini) handles complex multi-element scenes, fine detail, and in-image text rendering — give a detailed, logically structured description with clear spatial relationships.',
+      maxChars: 4000,
+    },
+  },
+  {
+    match: /nanobanana|gemini/,
+    preset: {
+      id: 'nanobanana-2',
+      label: 'Nano Banana 2 (Gemini)',
+      guidance:
+        'Nano Banana 2 (Gemini) responds best to logical, coherent specifications with clear spatial relationships — concise but complete. Avoid naming celebrities, brands, or real people (stricter content filtering).',
+      maxChars: 4000,
+    },
+  },
+  {
+    match: /gptimage|^gpt|openai/,
+    preset: {
+      id: 'gpt-image-2',
+      label: 'GPT Image 2.0',
+      guidance:
+        'GPT Image 2.0 follows natural-language instructions well and renders in-image text accurately — write a clear, coherent scene description in full sentences, and put any text that should appear in the image in "quotes". Avoid naming real people, celebrities, or brands (stricter moderation).',
+    },
+  },
+  {
+    match: /seedream4\.?5|seedream45/,
+    preset: {
+      id: 'seedream-4.5',
+      label: 'Seedream 4.5',
+      guidance:
+        'Seedream 4.5 (ByteDance) excels at product photography and marketing visuals — describe the product, surface, lighting, and background cleanly. Keep the prompt under ~2,000 characters.',
+      maxChars: 2000,
+    },
+  },
+  {
+    match: /seedream/,
+    preset: {
+      id: 'seedream-5.0-lite',
+      label: 'Seedream 5.0 Lite',
+      guidance:
+        'Seedream 5.0 Lite (ByteDance) is strong at photorealism and Chinese-style aesthetics — use a detailed photorealistic description. Keep the prompt under ~2,000 characters.',
+      maxChars: 2000,
+    },
+  },
+  {
+    match: /flux/,
+    preset: {
+      id: 'flux2-klein',
+      label: 'Flux 2 Klein',
+      guidance:
+        'Flux 2 Klein is a general-purpose base model with good text rendering — a clear, descriptive prompt works well. It does not support reference images.',
+    },
+  },
+  {
+    match: /zimage|z-?image/,
+    preset: {
+      id: 'z-image-turbo',
+      label: 'Z Image Turbo',
+      guidance:
+        'Z Image Turbo is the fastest drafting model — keep the prompt clear and not overly long; ideal for quick iterations. It does not support reference images.',
+      maxChars: 4000,
+    },
+  },
+]
+
+/** Resolve a free-text model hint to a tuned preset, or null if unknown. */
+export function getModelPreset(model: string | undefined): ModelPreset | null {
+  if (!model) return null
+  const norm = model.toLowerCase().replace(/[\s._-]/g, '')
+  for (const { match, preset } of MODEL_PRESETS) {
+    if (match.test(norm)) return preset
+  }
+  return null
+}

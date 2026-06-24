@@ -91,6 +91,27 @@ test('enhance_prompt rejects an out-of-enum mode (schema guardrail)', async () =
   assert.match(res.content[0].text, /Input validation error/)
 })
 
+test('enhance_prompt threads Tier-2 options (model preset, colors, negative) end-to-end', async () => {
+  const res: any = await client.callTool({
+    name: 'enhance_prompt',
+    arguments: { prompt: 'a sports car', model: 'midjourney', colors: ['#dc143c'], includeNegativePrompt: true },
+  })
+  assert.ok(!res.isError)
+  const t = res.content[0].text
+  assert.ok(t.includes('Midjourney V8.1'))
+  assert.ok(t.includes('#dc143c'))
+  assert.ok(/Negative prompt \(avoid\):/.test(t))
+})
+
+test('enhance_prompt rejects a malformed hex color (schema guardrail)', async () => {
+  const res: any = await client.callTool({
+    name: 'enhance_prompt',
+    arguments: { prompt: 'x', colors: ['not-a-color'] },
+  })
+  assert.equal(res.isError, true)
+  assert.match(res.content[0].text, /Input validation error/)
+})
+
 test('image_to_prompt with a local path returns an image + instruction over the wire', async () => {
   const res: any = await client.callTool({
     name: 'image_to_prompt',

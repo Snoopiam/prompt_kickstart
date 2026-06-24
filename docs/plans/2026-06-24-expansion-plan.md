@@ -49,7 +49,7 @@ built. Each is a new file in `src/tools/` + a system prompt in `src/lib/prompts.
    Rewrite a prompt with editable `[placeholder]` slots so the user can spin
    variations by swapping tags. *Inputs:* `prompt: string`.
 
-## Tier 2 — free, host-LLM, enhancements to existing tools
+## Tier 2 — free, host-LLM, enhancements to existing tools  ✅ COMPLETE (2026-06-24)
 
 Lower-effort polish, mostly new options rather than new tools.
 

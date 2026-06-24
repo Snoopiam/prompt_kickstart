@@ -51,3 +51,27 @@ test('expand prompt forbids aspect-ratio flags and handles translation', () => {
   assert.ok(EXPAND_SYSTEM_PROMPT.includes('--ar'))          // mentioned as forbidden
   assert.ok(/translate/i.test(EXPAND_SYSTEM_PROMPT))
 })
+
+// ---- Tier 2: model presets ----
+import { getModelPreset } from '../src/lib/prompts.js'
+
+test('getModelPreset resolves known model aliases to canonical ids', () => {
+  assert.equal(getModelPreset('midjourney')?.id, 'midjourney-v8.1')
+  assert.equal(getModelPreset('gpt image 2')?.id, 'gpt-image-2')
+  assert.equal(getModelPreset('nano banana 2')?.id, 'nanobanana-2')
+  assert.equal(getModelPreset('nanobanana pro')?.id, 'gemini-3-pro-image-preview')
+  assert.equal(getModelPreset('seedream 4.5')?.id, 'seedream-4.5')
+  assert.equal(getModelPreset('seedream 5.0 lite')?.id, 'seedream-5.0-lite')
+  assert.equal(getModelPreset('flux 2 klein')?.id, 'flux2-klein')
+  assert.equal(getModelPreset('z-image-turbo')?.id, 'z-image-turbo')
+})
+
+test('getModelPreset returns null for unknown or missing models', () => {
+  assert.equal(getModelPreset('no-such-model'), null)
+  assert.equal(getModelPreset(undefined), null)
+})
+
+test('pro Gemini wins over generic nanobanana match (ordering)', () => {
+  assert.equal(getModelPreset('nanobananapro')?.id, 'gemini-3-pro-image-preview')
+  assert.equal(getModelPreset('nanobanana2')?.id, 'nanobanana-2')
+})

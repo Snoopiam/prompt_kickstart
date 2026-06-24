@@ -49,9 +49,14 @@ Expand a brief text prompt into a detailed one. **Model-aware**, mirroring meige
 | `prompt` | `string` *(required)* | The simple prompt to enhance, e.g. `"a cat in a garden"`. |
 | `mode` | `"polish"` \| `"expand"` *(optional, default `polish`)* | **polish** (most models): preserve intent, add composition / lighting / materials. **expand** (Midjourney V8.1): rewrite into Midjourney-optimized language, auto-translate non-English. |
 | `model` | `string` *(optional)* | Target model hint, e.g. `"midjourney"`, `"gpt-image-2"`. For Midjourney models, prefer `mode: "expand"`. |
+| `includeNegativePrompt` | `boolean` *(optional, default `false`)* | Also output a `Negative prompt (avoid): …` list. |
+| `colors` | `string[]` *(optional)* | Exact hex colors to apply precisely (meigen `#` color picker), e.g. `["#dc143c"]`. |
+| `references` | `string[]` *(optional)* | Reference-image labels woven in as `@mentions` (meigen `@` mentions), e.g. `["image1"]`. |
 
 Works best on brief prompts (under ~30 words); if a prompt is already richly detailed, it
 may be returned largely unchanged.
+
+When you pass a known `model` (Midjourney V8.1, GPT Image 2.0, Nano Banana 2/Pro, Seedream 5.0 Lite / 4.5, Flux 2 Klein, Z Image Turbo), the enhancement is tuned to that model's prompting style and length limits.
 
 **Typical image flow:** `image_to_prompt` → `enhance_prompt` → paste into any image generator.
 **Typical video flow:** `storyboard_prompt` → paste into any video generator.

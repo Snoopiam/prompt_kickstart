@@ -73,5 +73,9 @@ console.log('— templatize_prompt —')
 const tm: any = await client.callTool({ name: 'templatize_prompt', arguments: { prompt: 'a red sports car on a coastal road at sunset' } })
 console.log(preview(tm).join('\n'), '\n')
 
+console.log('— enhance_prompt Tier-2 (model preset + colors + negative) —')
+const e2: any = await client.callTool({ name: 'enhance_prompt', arguments: { prompt: 'a sports car', model: 'seedream 5.0 lite', colors: ['#dc143c','f5f5dc'], references: ['image1'], includeNegativePrompt: true } })
+console.log(preview(e2).join('\n'), '\n')
+
 await client.close()
 console.log('CLOSED — server shut down cleanly')
