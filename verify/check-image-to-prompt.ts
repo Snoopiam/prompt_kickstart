@@ -25,3 +25,4 @@ console.log('badPath isError:', badOk)
 
 const pass = types === 'image,text' && hasReverseEng && noImgOk && badOk
 console.log(pass ? 'PASS' : 'FAIL')
+if (!pass) process.exit(1)

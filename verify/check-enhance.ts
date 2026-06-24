@@ -9,4 +9,6 @@ const oneBlock = r.content.length === 1 && r.content[0].type === 'text'
 console.log('hasUserPrompt:', hasUserPrompt)
 console.log('hasSystemPrompt:', hasSystemPrompt)
 console.log('singleTextBlock:', oneBlock)
-console.log(hasUserPrompt && hasSystemPrompt && oneBlock ? 'PASS' : 'FAIL')
+const pass = hasUserPrompt && hasSystemPrompt && oneBlock
+console.log(pass ? 'PASS' : 'FAIL')
+if (!pass) process.exit(1)

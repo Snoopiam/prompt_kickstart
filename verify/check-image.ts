@@ -24,3 +24,4 @@ const pass =
   Math.max(lMeta.width!, lMeta.height!) === 1568 && lMeta.width === 1568 &&
   none === null
 console.log(pass ? 'PASS' : 'FAIL')
+if (!pass) process.exit(1)
