@@ -52,6 +52,13 @@ returns a system prompt + instructions, and the host LLM produces the output.
 - `imageUrl?: string` — remote URL. Fetch + base64-encode the same way.
 - `style?: 'realistic' | 'anime' | 'illustration'` — default `realistic`.
 
+> **Implementation note (2026-06-24):** `imageUrl` and `style` were **descoped**
+> in the shipped build to match meigen.ai's live "Describe Image" behavior, which
+> is uploads-only (drag-drop / paste) with the visual style **inferred** from the
+> image rather than selected. The shipped tool therefore accepts only `imagePath`
+> (or an image already pasted in the conversation). Remote-URL fetching can be
+> re-added later if a use case requires it.
+
 **Behavior:**
 1. Resolve the image source in priority order: `imagePath` → `imageUrl` → none.
 2. If a source is provided: load the bytes, **auto-resize if oversized**
@@ -134,13 +141,3 @@ tools don't need them:
 ## Out of Scope
 
 - No changes to `MeiGen-AI-Design-MCP`.
-- No publishing to npm (local tool for now).
-- No automated tests in v1 (manual verification: run server, call each tool,
-  confirm content blocks). Can add later if desired.
-
-## Open Risks / Notes
-
-- `sharp` is a native dependency; on Windows it installs prebuilt binaries and
-  works in the existing MeiGen project, so no new risk expected.
-- `imageUrl` fetching has no auth and follows redirects via `fetch`; intended for
-  public image URLs only.
